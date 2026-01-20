@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { SiteConfig, LinkItem, DEFAULT_CONFIG } from './types';
 import * as storage from './services/storageService';
-import * as gemini from './services/geminiService';
 import Button from './components/Button';
 
 // --- SVGs ---
@@ -11,14 +10,8 @@ const LockIcon = () => (
 const LinkIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
 );
-const WandIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 4V2"></path><path d="M15 16v-2"></path><path d="M8 9h2"></path><path d="M20 9h2"></path><path d="M17.8 11.8 19 13"></path><path d="M15 9h0"></path><path d="M17.8 6.2 19 5"></path><path d="M3 21l9-9"></path><path d="M12.2 6.2 11 5"></path></svg>
-);
 const TrashIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-);
-const UserIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
 );
 
 const App: React.FC = () => {
@@ -34,9 +27,7 @@ const App: React.FC = () => {
   
   // Admin State
   const [newUrl, setNewUrl] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [companyContext, setCompanyContext] = useState('');
   
   // Client State
   const [clientLoading, setClientLoading] = useState(false);
@@ -53,7 +44,7 @@ const App: React.FC = () => {
         const currentSession = await storage.getSession();
         setSession(currentSession);
 
-        // Load Queue only if necessary (optimization, though we load it here for simplicity)
+        // Load Queue only if necessary
         const loadedQueue = await storage.getLinkQueue();
         setQueue(loadedQueue);
     };
@@ -129,17 +120,6 @@ const App: React.FC = () => {
           await storage.clearQueue(); 
           setQueue([]); 
       }
-  };
-
-  const handleGenerateCaption = async () => {
-    if (!companyContext) {
-      alert('Digite o nome da empresa ou contexto para gerar a legenda.');
-      return;
-    }
-    setIsGenerating(true);
-    const caption = await gemini.generateCreativeCaption(companyContext);
-    setConfig(prev => ({ ...prev, caption }));
-    setIsGenerating(false);
   };
 
   const handleClientContinue = useCallback(async () => {
@@ -279,23 +259,8 @@ const App: React.FC = () => {
                     value={config.caption}
                     onChange={(e) => setConfig({...config, caption: e.target.value})}
                     className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none min-h-[100px]"
+                    placeholder="Deixe em branco para esconder"
                   />
-                </div>
-
-                <div className="bg-blue-900/30 p-4 rounded-lg border border-blue-900/50">
-                  <label className="block text-xs font-bold text-blue-400 uppercase tracking-wide mb-2">IA Generator (Gemini)</label>
-                  <div className="flex gap-2">
-                    <input 
-                      type="text"
-                      placeholder="Contexto (ex: Empresa de Software)"
-                      value={companyContext}
-                      onChange={(e) => setCompanyContext(e.target.value)}
-                      className="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white"
-                    />
-                    <Button variant="secondary" onClick={handleGenerateCaption} isLoading={isGenerating} className="py-2 px-3 text-sm">
-                      <WandIcon />
-                    </Button>
-                  </div>
                 </div>
 
                 <Button onClick={handleSaveConfig} isLoading={isSaving} className="w-full mt-4">Salvar Alterações</Button>
@@ -376,28 +341,26 @@ const App: React.FC = () => {
 
       <main className="relative z-10 w-full max-w-md bg-slate-900/50 backdrop-blur-md border border-slate-800 p-8 rounded-2xl shadow-2xl flex flex-col items-center text-center space-y-8 animate-fade-in-up">
         
-        {/* Company Image */}
-        <div className="w-48 h-32 flex items-center justify-center mb-4">
-           {config.imageUrl ? (
+        {/* Company Image - Only if set */}
+        {config.imageUrl && (
+          <div className="w-48 h-32 flex items-center justify-center mb-4">
               <img 
                 src={config.imageUrl} 
-                alt="Logo da Empresa" 
+                alt="Logo" 
                 className="max-w-full max-h-full object-contain drop-shadow-lg"
               />
-           ) : (
-             <div className="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center">
-               <span className="text-3xl">🏢</span>
-             </div>
-           )}
-        </div>
+          </div>
+        )}
 
-        {/* Caption */}
-        <div className="space-y-4">
-          <h1 className="text-xl font-medium text-slate-100 leading-relaxed">
-            {config.caption}
-          </h1>
-          <div className="h-1 w-16 bg-blue-500 mx-auto rounded-full opacity-50"></div>
-        </div>
+        {/* Caption - Only if set */}
+        {config.caption && (
+          <div className="space-y-4">
+            <h1 className="text-xl font-medium text-slate-100 leading-relaxed">
+              {config.caption}
+            </h1>
+            <div className="h-1 w-16 bg-blue-500 mx-auto rounded-full opacity-50"></div>
+          </div>
+        )}
 
         {/* Action */}
         <div className="w-full pt-4">
@@ -418,13 +381,7 @@ const App: React.FC = () => {
 
       </main>
 
-      <footer 
-        className="absolute bottom-4 text-slate-600 text-xs select-none cursor-default hover:text-slate-500 transition-colors"
-        title="Admin Login"
-        onDoubleClick={() => window.location.hash = 'admin'}
-      >
-        &copy; {new Date().getFullYear()} Secure Redirect
-      </footer>
+      {/* Hidden Admin Access - No visual footer text */}
     </div>
   );
 };
