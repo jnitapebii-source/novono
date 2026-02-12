@@ -341,7 +341,7 @@ const App: React.FC = () => {
 
       <main className="relative z-10 w-full max-w-md bg-slate-900/50 backdrop-blur-md border border-slate-800 p-8 rounded-2xl shadow-2xl flex flex-col items-center text-center space-y-8 animate-fade-in-up">
         
-      {/* Company Image - Only if set */}
+        {/* Company Image - Only if set */}
         {config.imageUrl && (
           <div className="w-48 h-32 flex items-center justify-center mb-4">
               <img 
