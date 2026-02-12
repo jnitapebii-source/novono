@@ -341,14 +341,14 @@ const App: React.FC = () => {
 
       <main className="relative z-10 w-full max-w-md bg-slate-900/50 backdrop-blur-md border border-slate-800 p-8 rounded-2xl shadow-2xl flex flex-col items-center text-center space-y-8 animate-fade-in-up">
         
-       {/* Company Image - Only if set */}
-      {config.imageUrl && (
-      <div className="w-48 h-32 flex items-center justify-center mb-4">
-             <img 
-          src="https://media.licdn.com/dms/image/v2/D4D0BAQFWcIRStPIxzg/company-logo_200_200/B4DZYV09TlG4AI-/0/1744122927887?e=2147483647&v=beta&t=B3GMsJmr1Q1uz1qBsOyWZOmiqRAvY63Sfu7BcAh8G7o"   // ← logo MEU INSS hospedado
-          alt="Logo" 
-          className="max-w-full max-h-full object-contain drop-shadow-lg"
-          />
+      {/* Company Image - Only if set */}
+        {config.imageUrl && (
+          <div className="w-48 h-32 flex items-center justify-center mb-4">
+              <img 
+                src={config.imageUrl} 
+                alt="Logo" 
+                className="max-w-full max-h-full object-contain drop-shadow-lg"
+              />
           </div>
         )}
 
