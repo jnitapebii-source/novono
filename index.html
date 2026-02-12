@@ -1,23 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
-    
-<script type="text/javascript">
-  //digite a url de redirect
-  var url_link_redirect_pc = "https://g1.globo.com/economia/noticia/2026/01/19/banco-master-fgc-comecou-ressarcimentos-nesta-segunda-saiba-como-reaver-seu-dinheiro.ghtml";
-
-  //function js
-  function isMobile() {
-   const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
-   return regex.test(navigator.userAgent);
-  }
-
-  //validation js
-  if (isMobile()) { console.log("Mobile device detected"); } else {
-   window.location = url_link_redirect_pc;
-  }
- </script>
-    
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>LinkFlow</title>
@@ -49,22 +32,22 @@
         animation-name: fadeInUp;
       }
     </style>
-  <script type="importmap">
+<script type="importmap">
 {
   "imports": {
-    "vite": "https://esm.sh/vite@^7.3.1",
     "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.90.1"
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.93.3"
   }
 }
 </script>
+<link rel="stylesheet" href="/index.css">
 </head>
   <body>
     <div id="root"></div>
-    <!-- Esta linha é crucial para iniciar o React -->
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
